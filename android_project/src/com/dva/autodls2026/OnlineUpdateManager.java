@@ -16,7 +16,7 @@ public class OnlineUpdateManager {
     public static final String FILE_NAME = "dls_script.json";
     public static final String PREF_NAME = "auto_dls_prefs";
     public static final String PREF_KEY_URL = "update_url";
-    public static final String DEFAULT_UPDATE_URL = "https://dpaste.org/B3ELS/raw";
+    public static final String DEFAULT_UPDATE_URL = "https://raw.githubusercontent.com/anhdofficial/updatetooldls2026/main/online_script.json";
 
     public interface UpdateCallback {
         void onSuccess(String version, boolean isNewer);
