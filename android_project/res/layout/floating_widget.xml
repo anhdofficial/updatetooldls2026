@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <!-- Card điều khiển mở rộng -->
+    <LinearLayout
+        android:id="@+id/layout_expanded"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#E61A222D"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="⚽ DLS 2026"
+                android:textColor="#00E676"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/btn_mini"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="➖"
+                android:textColor="#B0BEC5"
+                android:padding="4dp"
+                android:textSize="13sp"/>
+            <TextView
+                android:id="@+id/btn_close_float"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✖"
+                android:textColor="#FF5252"
+                android:padding="4dp"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_float_res"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Màn hình: --"
+            android:textColor="#78909C"
+            android:textSize="10sp"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/tv_float_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trạng thái: Đang dừng"
+            android:textColor="#FFD600"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"/>
+
+        <Button
+            android:id="@+id/btn_float_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:text="▶ BẮT ĐẦU"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:backgroundTint="#00C853"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btn_float_update"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:text="🔄 Update Online"
+            android:textSize="11sp"
+            android:backgroundTint="#37474F"
+            android:textColor="#CFD8DC"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+
+    <!-- Nút bóng tròn khi thu nhỏ -->
+    <LinearLayout
+        android:id="@+id/layout_collapsed"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="#00C853"
+        android:gravity="center"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚽"
+            android:textSize="22sp"/>
+    </LinearLayout>
+
+</FrameLayout>
+

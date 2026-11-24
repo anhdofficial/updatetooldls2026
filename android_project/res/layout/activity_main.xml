@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121820"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚽ AUTO DLS 2026"
+            android:textColor="#00E676"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tool Tự Đá &amp; Cày Cuốc - Hỗ Trợ Update Online"
+            android:textColor="#90A4AE"
+            android:textSize="13sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Status Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#1E2630"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CÁC QUYỀN CẦN THIẾT"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Quyền trợ năng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:id="@+id/tv_acc_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="1. Quyền Trợ năng: Chưa cấp"
+                    android:textColor="#FF5252"
+                    android:textSize="13sp"/>
+                <Button
+                    android:id="@+id/btn_grant_acc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="CẤP QUYỀN"
+                    android:textSize="11sp"/>
+            </LinearLayout>
+
+            <!-- Quyền cửa sổ nổi -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/tv_overlay_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2. Quyền Cửa sổ nổi: Chưa cấp"
+                    android:textColor="#FF5252"
+                    android:textSize="13sp"/>
+                <Button
+                    android:id="@+id/btn_grant_overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="CẤP QUYỀN"
+                    android:textSize="11sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Hot Update Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#1E2630"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌐 CẬP NHẬT KỊCH BẢN ONLINE"
+                android:textColor="#00E676"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_script_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phiên bản kịch bản hiện tại: v1.0.0"
+                android:textColor="#ECEFF1"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đường dẫn cập nhật (Server URL):"
+                android:textColor="#90A4AE"
+                android:textSize="11sp"
+                android:layout_marginBottom="4dp"/>
+
+            <EditText
+                android:id="@+id/et_update_url"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:background="#263238"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:padding="8dp"
+                android:singleLine="true"
+                android:layout_marginBottom="12dp"/>
+
+            <Button
+                android:id="@+id/btn_check_update"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:text="🔄 KIỂM TRA &amp; CẬP NHẬT ONLINE NGAY"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- Start Button -->
+        <Button
+            android:id="@+id/btn_start_floating"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="⚽ MỞ BÓNG NỔI AUTO DLS"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:backgroundTint="#00C853"
+            android:textColor="#FFFFFF"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sau khi bấm mở, vào game DLS 2026 và nhấn ▶ Bắt đầu trên bóng nổi."
+            android:textColor="#78909C"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginTop="12dp"/>
+
+    </LinearLayout>
+</ScrollView>
+

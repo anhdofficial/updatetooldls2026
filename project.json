@@ -1,0 +1,18 @@
+{
+  "name": "Auto DLS 2026",
+  "packageName": "com.dva.autodls2026",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "main": "main.js",
+  "icon": "",
+  "launchConfig": {
+    "hideLogs": true
+  },
+  "permissions": [
+    "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.WAKE_LOCK",
+    "android.permission.VIBRATE"
+  ]
+}
+
