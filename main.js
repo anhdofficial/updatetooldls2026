@@ -32,27 +32,25 @@ function getCoord(percentX, percentY) {
     };
 }
 
-// Bảng toạ độ chuẩn của DLS 2026 (tính theo %)
+// Bảng toạ độ chuẩn của DLS 2026 (Đo đạc chính xác từ ảnh thực tế)
 var POS = {
-    // Cụm phím điều khiển trong trận (Góc dưới bên phải)
-    BTN_B: getCoord(88.5, 84.5),       // Nút B: Pressing cướp bóng / Chuyền sệt
-    BTN_A: getCoord(95.5, 69.0),       // Nút A: Sút bóng / Xoạc bóng / Phá bóng
-    BTN_C: getCoord(82.0, 67.0),       // Nút C: Chuyền bổng / Đổi người
+    // 1. Trong trận đấu (Ảnh 3)
+    BTN_B: getCoord(78.5, 83.0),          // Nút B: Pressing cướp bóng
+    BTN_A: getCoord(90.5, 83.0),          // Nút A: Sút bóng / Phá bóng
+    BTN_C: getCoord(90.5, 58.5),          // Nút C: Chuyền bổng
 
-    // Cần di chuyển (Joystick) hướng lên phía trước
-    JOYSTICK_FORWARD_FROM: getCoord(15.0, 75.0),
-    JOYSTICK_FORWARD_TO:   getCoord(22.0, 75.0),
+    // 2. Nghỉ hiệp / Tạm dừng (Ảnh 4)
+    BTN_RESUME_BLUE: getCoord(70.0, 83.0),// Nút RESUME màu xanh dương
+    CONTINUE_BOTTOM_RIGHT: getCoord(85.0, 89.0), // Nút Tiếp tục
 
-    // Các vị trí nút tiếp tục / qua hiệp / nhận thưởng
-    CONTINUE_BOTTOM_RIGHT: getCoord(86.0, 89.0), // Nút Tiếp tục góc dưới phải
-    CONTINUE_CENTER:       getCoord(50.0, 85.0), // Nút Tiếp tục giữa màn hình
-    SKIP_CUTSCENE:         getCoord(50.0, 50.0), // Chạm giữa màn hình bỏ qua replay/ăn mừng
-    PLAY_CAREER_MATCH:     getCoord(82.0, 82.0), // Nút vào trận ở sảnh Career Mode
+    // 3. Đội hình ra sân (Ảnh 2)
+    BTN_PLAY_GREEN: getCoord(88.0, 94.0), // Nút PLAY màu xanh lá
 
-    // Nút đóng popup / quảng cáo
-    CLOSE_POPUP_RIGHT:     getCoord(94.5, 7.5),  // Nút X góc trên phải
-    CLOSE_POPUP_LEFT:      getCoord(5.5, 7.5),   // Nút X góc trên trái
-    CLAIM_REWARD:          getCoord(50.0, 72.0)  // Nút Nhận vàng / Kim cương
+    // 4. Sảnh Career Mode (Ảnh 1)
+    CARD_PLAY_NOW: getCoord(25.0, 22.0),  // Thẻ trận đấu PLAY NOW
+    SKIP_CUTSCENE: getCoord(50.0, 50.0),  // Chạm giữa màn hình bỏ qua replay/ăn mừng
+    CLAIM_REWARD: getCoord(50.0, 75.0),   // Nút Nhận vàng / Kim cương
+    CLOSE_POPUP_RIGHT: getCoord(94.5, 7.5)// Nút X góc trên phải
 };
 
 // ------------------------------------------------------------------------------
@@ -196,40 +194,37 @@ function startBot() {
             try {
                 loopCount++;
 
-                // A. TRONG TRẬN: THỰC HIỆN CHIẾN THUẬT AUTO PRESSING & CLEAR
-                // Giữ nút B trong 1.5 giây để cầu thủ tự động dí theo cướp bóng
+                // 1. TRONG TRẬN (Ảnh 3): Giữ nút B để pressing cướp bóng
                 press(POS.BTN_B.x, POS.BTN_B.y, 1400);
                 sleep(100);
 
-                // Sau mỗi pha pressing, nhấp nhẹ phím A để sút/phá bóng lên trên
+                // 2. TRONG TRẬN (Ảnh 3): Nhấp nhẹ phím A để sút/phá bóng lên trên
                 click(POS.BTN_A.x, POS.BTN_A.y);
-                sleep(200);
+                sleep(120);
 
-                // Chạm vào giữa màn hình để bỏ qua các đoạn quay chậm, phạm lỗi, ăn mừng
+                // 3. Bỏ qua quay chậm, phạm lỗi, ăn mừng (Chạm giữa màn hình)
                 click(POS.SKIP_CUTSCENE.x, POS.SKIP_CUTSCENE.y);
-                sleep(150);
+                sleep(120);
 
-                // B. BẤM CÁC VÙNG TIẾP TỤC ĐỂ KHÔNG BỊ KẸT KHI HẾT HIỆP / HẾT TRẬN
-                // Cứ mỗi 3 vòng lặp, thử bấm vào các nút Tiếp tục
-                if (loopCount % 3 === 0) {
-                    click(POS.CONTINUE_BOTTOM_RIGHT.x, POS.CONTINUE_BOTTOM_RIGHT.y);
-                    sleep(200);
-                    click(POS.CONTINUE_CENTER.x, POS.CONTINUE_CENTER.y);
-                    sleep(200);
+                // 4. NGHỈ GIỮA HIỆP / TẠM DỪNG (Ảnh 4): Bấm nút RESUME xanh dương & Tiếp tục
+                click(POS.BTN_RESUME_BLUE.x, POS.BTN_RESUME_BLUE.y);
+                sleep(120);
+                click(POS.CONTINUE_BOTTOM_RIGHT.x, POS.CONTINUE_BOTTOM_RIGHT.y);
+                sleep(120);
+
+                // 5. ĐỘI HÌNH RA SÂN (Ảnh 2): Cứ mỗi 2 vòng, bấm nút PLAY xanh lá
+                if (loopCount % 2 === 0) {
+                    click(POS.BTN_PLAY_GREEN.x, POS.BTN_PLAY_GREEN.y);
+                    sleep(150);
                 }
 
-                // Cứ mỗi 10 vòng lặp, kiểm tra khả năng đã về sảnh Career Mode hoặc nhận thưởng
-                if (loopCount % 10 === 0) {
-                    // Thử bấm nút vào trận tiếp theo
-                    click(POS.PLAY_CAREER_MATCH.x, POS.PLAY_CAREER_MATCH.y);
-                    sleep(250);
-                    // Thử bấm nút nhận thưởng
-                    click(POS.CLAIM_REWARD.x, POS.CLAIM_REWARD.y);
-                    sleep(200);
-                    // Thử đóng các popup quảng cáo / sự kiện nếu có
-                    click(POS.CLOSE_POPUP_RIGHT.x, POS.CLOSE_POPUP_RIGHT.y);
+                // 6. SẢNH CAREER (Ảnh 1): Cứ mỗi 4 vòng, bấm card PLAY NOW + Nhận thưởng
+                if (loopCount % 4 === 0) {
+                    click(POS.CARD_PLAY_NOW.x, POS.CARD_PLAY_NOW.y);
                     sleep(150);
-                    click(POS.CLOSE_POPUP_LEFT.x, POS.CLOSE_POPUP_LEFT.y);
+                    click(POS.CLAIM_REWARD.x, POS.CLAIM_REWARD.y);
+                    sleep(150);
+                    click(POS.CLOSE_POPUP_RIGHT.x, POS.CLOSE_POPUP_RIGHT.y);
                 }
 
                 // Cập nhật thống kê thời gian chạy

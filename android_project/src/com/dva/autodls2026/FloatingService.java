@@ -206,59 +206,67 @@ public class FloatingService extends Service {
                         JSONObject coords = config.optJSONObject("coords");
                         long pressB = config.optLong("pressB_duration_ms", 1400);
 
-                        // 1. Giữ nút B (Pressing cướp bóng)
+                        // 1. TRONG TRẬN (Ảnh 3): Giữ nút B (Pressing cướp bóng ở 78.5%, 83.0%)
                         if (coords != null && coords.has("btn_b")) {
                             JSONArray b = coords.getJSONArray("btn_b");
                             service.press(getPxX((float) b.getDouble(0)), getPxY((float) b.getDouble(1)), pressB);
                         }
-                        Thread.sleep(150);
+                        Thread.sleep(120);
 
-                        // 2. Nhấp nút A (Sút / Phá bóng)
+                        // 2. TRONG TRẬN (Ảnh 3): Nhấp nút A (Sút / Phá bóng ở 90.5%, 83.0%)
                         if (coords != null && coords.has("btn_a")) {
                             JSONArray a = coords.getJSONArray("btn_a");
                             service.tap(getPxX((float) a.getDouble(0)), getPxY((float) a.getDouble(1)));
                         }
-                        Thread.sleep(150);
+                        Thread.sleep(120);
 
-                        // 3. Chạm giữa màn hình bỏ qua replay
+                        // 3. Bỏ qua quay chậm / ăn mừng bàn thắng (Chạm giữa màn hình 50%, 50%)
                         if (coords != null && coords.has("skip_cutscene")) {
                             JSONArray s = coords.getJSONArray("skip_cutscene");
                             service.tap(getPxX((float) s.getDouble(0)), getPxY((float) s.getDouble(1)));
                         }
-                        Thread.sleep(150);
+                        Thread.sleep(120);
 
-                        // 4. Bấm Tiếp tục qua hiệp 1 / hết trận
-                        if (loop % 3 == 0 && coords != null) {
+                        // 4. NGHỈ GIỮA HIỆP / TẠM DỪNG (Ảnh 4): Bấm nút RESUME màu xanh dương (70.0%, 83.0%) & Nút Tiếp tục (85.0%, 89.0%)
+                        if (coords != null) {
+                            if (coords.has("btn_resume_blue")) {
+                                JSONArray res = coords.getJSONArray("btn_resume_blue");
+                                service.tap(getPxX((float) res.getDouble(0)), getPxY((float) res.getDouble(1)));
+                            }
+                            Thread.sleep(120);
                             if (coords.has("continue_br")) {
                                 JSONArray cbr = coords.getJSONArray("continue_br");
                                 service.tap(getPxX((float) cbr.getDouble(0)), getPxY((float) cbr.getDouble(1)));
                             }
-                            Thread.sleep(200);
-                            if (coords.has("continue_c")) {
-                                JSONArray cc = coords.getJSONArray("continue_c");
-                                service.tap(getPxX((float) cc.getDouble(0)), getPxY((float) cc.getDouble(1)));
-                            }
+                        }
+                        Thread.sleep(120);
+
+                        // 5. ĐỘI HÌNH RA SÂN (Ảnh 2): Bấm nút PLAY xanh lá góc dưới phải (88.0%, 94.0%)
+                        if (loop % 2 == 0 && coords != null && coords.has("btn_play_green")) {
+                            JSONArray p = coords.getJSONArray("btn_play_green");
+                            service.tap(getPxX((float) p.getDouble(0)), getPxY((float) p.getDouble(1)));
+                            Thread.sleep(150);
                         }
 
-                        // 5. Kiểm tra vào trận mới / nhận thưởng
-                        if (loop % 10 == 0 && coords != null) {
-                            if (coords.has("play_match")) {
-                                JSONArray p = coords.getJSONArray("play_match");
-                                service.tap(getPxX((float) p.getDouble(0)), getPxY((float) p.getDouble(1)));
+                        // 6. SẢNH CAREER (Ảnh 1): Bấm card PLAY NOW (25.0%, 22.0%) + Nhận thưởng + Đóng popup
+                        if (loop % 4 == 0 && coords != null) {
+                            if (coords.has("card_play_now")) {
+                                JSONArray cpn = coords.getJSONArray("card_play_now");
+                                service.tap(getPxX((float) cpn.getDouble(0)), getPxY((float) cpn.getDouble(1)));
                             }
-                            Thread.sleep(200);
+                            Thread.sleep(150);
                             if (coords.has("claim_reward")) {
                                 JSONArray cr = coords.getJSONArray("claim_reward");
                                 service.tap(getPxX((float) cr.getDouble(0)), getPxY((float) cr.getDouble(1)));
                             }
-                            Thread.sleep(200);
+                            Thread.sleep(150);
                             if (coords.has("close_ad")) {
                                 JSONArray ca = coords.getJSONArray("close_ad");
                                 service.tap(getPxX((float) ca.getDouble(0)), getPxY((float) ca.getDouble(1)));
                             }
                         }
 
-                        Thread.sleep(200);
+                        Thread.sleep(150);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

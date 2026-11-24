@@ -1,21 +1,19 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "updateUrl": "https://raw.githubusercontent.com/anhdofficial/updatetooldls2026/main/online_script.json",
   "pressB_duration_ms": 1400,
-  "tapA_delay_ms": 200,
+  "tapA_delay_ms": 150,
   "skip_delay_ms": 150,
-  "continue_interval": 3,
-  "match_interval": 10,
   "coords": {
-    "btn_b": [88.5, 84.5],
-    "btn_a": [95.5, 69.0],
-    "btn_c": [82.0, 67.0],
-    "continue_br": [86.0, 89.0],
-    "continue_c": [50.0, 85.0],
+    "card_play_now": [25.0, 22.0],
+    "btn_play_green": [88.0, 94.0],
+    "btn_b": [78.5, 83.0],
+    "btn_a": [90.5, 83.0],
+    "btn_c": [90.5, 58.5],
+    "btn_resume_blue": [70.0, 83.0],
+    "continue_br": [85.0, 89.0],
     "skip_cutscene": [50.0, 50.0],
-    "play_match": [82.0, 82.0],
-    "claim_reward": [50.0, 72.0],
+    "claim_reward": [50.0, 75.0],
     "close_ad": [94.5, 7.5]
   }
 }
-
