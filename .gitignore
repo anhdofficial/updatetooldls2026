@@ -1,0 +1,4 @@
+*.xapk
+android_build/
+__pycache__/
+*.idsig

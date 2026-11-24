@@ -31,8 +31,15 @@ public class FloatingService extends Service {
     private View layoutCollapsed;
     private TextView tvStatus;
     private TextView tvRes;
+    private TextView tvStats;
     private Button btnToggle;
+    private Button btnMode;
     private Button btnUpdate;
+
+    private static final int MODE_ADS_RESET = 0;
+    private static final int MODE_AUTO_MATCH = 1;
+    private int currentMode = MODE_ADS_RESET;
+    private int adsWatchedCount = 0;
 
     private boolean isBotRunning = false;
     private Thread botThread = null;
@@ -80,10 +87,29 @@ public class FloatingService extends Service {
         layoutCollapsed = floatingView.findViewById(R.id.layout_collapsed);
         tvStatus = (TextView) floatingView.findViewById(R.id.tv_float_status);
         tvRes = (TextView) floatingView.findViewById(R.id.tv_float_res);
+        tvStats = (TextView) floatingView.findViewById(R.id.tv_float_stats);
         btnToggle = (Button) floatingView.findViewById(R.id.btn_float_toggle);
+        btnMode = (Button) floatingView.findViewById(R.id.btn_float_mode);
         btnUpdate = (Button) floatingView.findViewById(R.id.btn_float_update);
 
         tvRes.setText("Màn hình: " + screenWidth + " x " + screenHeight);
+
+        btnMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isBotRunning) {
+                    Toast.makeText(FloatingService.this, "Hãy tạm dừng bot trước khi đổi chế độ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (currentMode == MODE_ADS_RESET) {
+                    currentMode = MODE_AUTO_MATCH;
+                    btnMode.setText("Chế độ: ⚽ Tự Đá Trận");
+                } else {
+                    currentMode = MODE_ADS_RESET;
+                    btnMode.setText("Chế độ: 🎬 Cày Ads Reset");
+                }
+            }
+        });
 
         // Kéo thả view
         setupDrag();
@@ -174,6 +200,37 @@ public class FloatingService extends Service {
         return screenHeight * (percentY / 100.0f);
     }
 
+    private void setStatus(final String text) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (tvStatus != null) tvStatus.setText(text);
+            }
+        });
+    }
+
+    private void updateStats() {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (tvStats != null) {
+                    tvStats.setText("Đã xem: " + adsWatchedCount + " video (~" + (adsWatchedCount * 40) + " vàng)");
+                }
+            }
+        });
+    }
+
+    private void sleepSafe(long ms) {
+        long end = System.currentTimeMillis() + ms;
+        while (isBotRunning && System.currentTimeMillis() < end) {
+            try {
+                Thread.sleep(Math.min(200, end - System.currentTimeMillis()));
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
     private void startBot() {
         if (!AutoAccessibilityService.isRunning()) {
             Toast.makeText(this, "Chưa bật quyền Trợ năng! Vui lòng vào Cài đặt để bật.", Toast.LENGTH_LONG).show();
@@ -183,7 +240,6 @@ public class FloatingService extends Service {
         updateScreenResolution();
         isBotRunning = true;
         btnToggle.setText("⏸ TẠM DỪNG");
-        tvStatus.setText("Trạng thái: Đang tự đá ⚡");
         tvStatus.setTextColor(Color.parseColor("#00E676"));
 
         // Giữ sáng màn hình
@@ -194,87 +250,162 @@ public class FloatingService extends Service {
         botThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int loop = 0;
-                while (isBotRunning) {
-                    try {
-                        loop++;
-                        AutoAccessibilityService service = AutoAccessibilityService.getInstance();
-                        if (service == null) break;
-
-                        // Đọc cấu hình mới nhất (đã cập nhật online)
-                        JSONObject config = OnlineUpdateManager.loadConfig(FloatingService.this);
-                        JSONObject coords = config.optJSONObject("coords");
-                        long pressB = config.optLong("pressB_duration_ms", 1400);
-
-                        // 1. TRONG TRẬN (Ảnh 3): Giữ nút B (Pressing cướp bóng ở 78.5%, 83.0%)
-                        if (coords != null && coords.has("btn_b")) {
-                            JSONArray b = coords.getJSONArray("btn_b");
-                            service.press(getPxX((float) b.getDouble(0)), getPxY((float) b.getDouble(1)), pressB);
-                        }
-                        Thread.sleep(120);
-
-                        // 2. TRONG TRẬN (Ảnh 3): Nhấp nút A (Sút / Phá bóng ở 90.5%, 83.0%)
-                        if (coords != null && coords.has("btn_a")) {
-                            JSONArray a = coords.getJSONArray("btn_a");
-                            service.tap(getPxX((float) a.getDouble(0)), getPxY((float) a.getDouble(1)));
-                        }
-                        Thread.sleep(120);
-
-                        // 3. Bỏ qua quay chậm / ăn mừng bàn thắng (Chạm giữa màn hình 50%, 50%)
-                        if (coords != null && coords.has("skip_cutscene")) {
-                            JSONArray s = coords.getJSONArray("skip_cutscene");
-                            service.tap(getPxX((float) s.getDouble(0)), getPxY((float) s.getDouble(1)));
-                        }
-                        Thread.sleep(120);
-
-                        // 4. NGHỈ GIỮA HIỆP / TẠM DỪNG (Ảnh 4): Bấm nút RESUME màu xanh dương (70.0%, 83.0%) & Nút Tiếp tục (85.0%, 89.0%)
-                        if (coords != null) {
-                            if (coords.has("btn_resume_blue")) {
-                                JSONArray res = coords.getJSONArray("btn_resume_blue");
-                                service.tap(getPxX((float) res.getDouble(0)), getPxY((float) res.getDouble(1)));
-                            }
-                            Thread.sleep(120);
-                            if (coords.has("continue_br")) {
-                                JSONArray cbr = coords.getJSONArray("continue_br");
-                                service.tap(getPxX((float) cbr.getDouble(0)), getPxY((float) cbr.getDouble(1)));
-                            }
-                        }
-                        Thread.sleep(120);
-
-                        // 5. ĐỘI HÌNH RA SÂN (Ảnh 2): Bấm nút PLAY xanh lá góc dưới phải (88.0%, 94.0%)
-                        if (loop % 2 == 0 && coords != null && coords.has("btn_play_green")) {
-                            JSONArray p = coords.getJSONArray("btn_play_green");
-                            service.tap(getPxX((float) p.getDouble(0)), getPxY((float) p.getDouble(1)));
-                            Thread.sleep(150);
-                        }
-
-                        // 6. SẢNH CAREER (Ảnh 1): Bấm card PLAY NOW (25.0%, 22.0%) + Nhận thưởng + Đóng popup
-                        if (loop % 4 == 0 && coords != null) {
-                            if (coords.has("card_play_now")) {
-                                JSONArray cpn = coords.getJSONArray("card_play_now");
-                                service.tap(getPxX((float) cpn.getDouble(0)), getPxY((float) cpn.getDouble(1)));
-                            }
-                            Thread.sleep(150);
-                            if (coords.has("claim_reward")) {
-                                JSONArray cr = coords.getJSONArray("claim_reward");
-                                service.tap(getPxX((float) cr.getDouble(0)), getPxY((float) cr.getDouble(1)));
-                            }
-                            Thread.sleep(150);
-                            if (coords.has("close_ad")) {
-                                JSONArray ca = coords.getJSONArray("close_ad");
-                                service.tap(getPxX((float) ca.getDouble(0)), getPxY((float) ca.getDouble(1)));
-                            }
-                        }
-
-                        Thread.sleep(150);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if (currentMode == MODE_ADS_RESET) {
+                    runAdsResetLoop();
+                } else {
+                    runAutoMatchLoop();
                 }
             }
         });
         botThread.start();
         Toast.makeText(this, "Auto DLS 2026: BẮT ĐẦU CHẠY!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void runAdsResetLoop() {
+        while (isBotRunning) {
+            try {
+                AutoAccessibilityService service = AutoAccessibilityService.getInstance();
+                if (service == null) break;
+
+                // 1. Bấm nút FREE COINS ở sảnh (Ảnh 1: 21.0%, 4.5%)
+                setStatus("1. Bấm Free Coins...");
+                service.tap(getPxX(21.0f), getPxY(4.5f));
+                sleepSafe(1200);
+
+                // 2. Chờ video quảng cáo chạy (~32 giây)
+                for (int s = 32; s > 0 && isBotRunning; s--) {
+                    setStatus("2. Đang xem video: " + s + "s...");
+                    sleepSafe(1000);
+                }
+                if (!isBotRunning) break;
+
+                // 3. Tắt quảng cáo (bấm góc trên phải, trên trái, skip)
+                setStatus("3. Đang đóng quảng cáo...");
+                service.tap(getPxX(95.0f), getPxY(5.0f));
+                sleepSafe(400);
+                service.tap(getPxX(5.0f), getPxY(5.0f));
+                sleepSafe(400);
+                service.tap(getPxX(93.0f), getPxY(12.0f));
+                sleepSafe(400);
+                service.goBack();
+                sleepSafe(1500);
+
+                adsWatchedCount++;
+                updateStats();
+
+                // 4. Mở đa nhiệm & vuốt tắt game DLS
+                setStatus("4. Đang tắt & reset DLS...");
+                service.openRecents();
+                sleepSafe(1000);
+                service.swipe(getPxX(50.0f), getPxY(65.0f), getPxX(50.0f), getPxY(15.0f), 300);
+                sleepSafe(800);
+                service.goHome();
+                sleepSafe(600);
+
+                // 5. Mở lại game DLS từ đầu
+                setStatus("5. Đang mở lại DLS...");
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.firsttouchgames.dls7");
+                if (launchIntent != null) {
+                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(launchIntent);
+                }
+
+                // 6. Chờ game load màn hình chờ và sảnh chính
+                for (int w = 7; w > 0 && isBotRunning; w--) {
+                    setStatus("6. Game đang load: " + w + "s...");
+                    sleepSafe(1000);
+                }
+                if (!isBotRunning) break;
+
+                // Bấm giữa màn hình để qua màn hình splash/chờ
+                service.tap(getPxX(50.0f), getPxY(50.0f));
+                sleepSafe(3000);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                sleepSafe(1000);
+            }
+        }
+    }
+
+    private void runAutoMatchLoop() {
+        int loop = 0;
+        setStatus("Trạng thái: Đang tự đá ⚡");
+        while (isBotRunning) {
+            try {
+                loop++;
+                AutoAccessibilityService service = AutoAccessibilityService.getInstance();
+                if (service == null) break;
+
+                JSONObject config = OnlineUpdateManager.loadConfig(FloatingService.this);
+                JSONObject coords = config.optJSONObject("coords");
+                long pressB = config.optLong("pressB_duration_ms", 1400);
+
+                // 1. TRONG TRẬN (Ảnh 3): Giữ nút B (Pressing cướp bóng ở 78.5%, 83.0%)
+                if (coords != null && coords.has("btn_b")) {
+                    JSONArray b = coords.getJSONArray("btn_b");
+                    service.press(getPxX((float) b.getDouble(0)), getPxY((float) b.getDouble(1)), pressB);
+                }
+                sleepSafe(120);
+
+                // 2. TRONG TRẬN (Ảnh 3): Nhấp nút A (Sút / Phá bóng ở 90.5%, 83.0%)
+                if (coords != null && coords.has("btn_a")) {
+                    JSONArray a = coords.getJSONArray("btn_a");
+                    service.tap(getPxX((float) a.getDouble(0)), getPxY((float) a.getDouble(1)));
+                }
+                sleepSafe(120);
+
+                // 3. Bỏ qua quay chậm / ăn mừng bàn thắng (Chạm giữa màn hình 50%, 50%)
+                if (coords != null && coords.has("skip_cutscene")) {
+                    JSONArray s = coords.getJSONArray("skip_cutscene");
+                    service.tap(getPxX((float) s.getDouble(0)), getPxY((float) s.getDouble(1)));
+                }
+                sleepSafe(120);
+
+                // 4. NGHỈ GIỮA HIỆP / TẠM DỪNG (Ảnh 4): Bấm nút RESUME màu xanh dương (70.0%, 83.0%) & Nút Tiếp tục (85.0%, 89.0%)
+                if (coords != null) {
+                    if (coords.has("btn_resume_blue")) {
+                        JSONArray res = coords.getJSONArray("btn_resume_blue");
+                        service.tap(getPxX((float) res.getDouble(0)), getPxY((float) res.getDouble(1)));
+                    }
+                    sleepSafe(120);
+                    if (coords.has("continue_br")) {
+                        JSONArray cbr = coords.getJSONArray("continue_br");
+                        service.tap(getPxX((float) cbr.getDouble(0)), getPxY((float) cbr.getDouble(1)));
+                    }
+                }
+                sleepSafe(120);
+
+                // 5. ĐỘI HÌNH RA SÂN (Ảnh 2): Bấm nút PLAY xanh lá góc dưới phải (88.0%, 94.0%)
+                if (loop % 2 == 0 && coords != null && coords.has("btn_play_green")) {
+                    JSONArray p = coords.getJSONArray("btn_play_green");
+                    service.tap(getPxX((float) p.getDouble(0)), getPxY((float) p.getDouble(1)));
+                    sleepSafe(150);
+                }
+
+                // 6. SẢNH CAREER (Ảnh 1): Bấm card PLAY NOW (25.0%, 22.0%) + Nhận thưởng + Đóng popup
+                if (loop % 4 == 0 && coords != null) {
+                    if (coords.has("card_play_now")) {
+                        JSONArray cpn = coords.getJSONArray("card_play_now");
+                        service.tap(getPxX((float) cpn.getDouble(0)), getPxY((float) cpn.getDouble(1)));
+                    }
+                    sleepSafe(150);
+                    if (coords.has("claim_reward")) {
+                        JSONArray cr = coords.getJSONArray("claim_reward");
+                        service.tap(getPxX((float) cr.getDouble(0)), getPxY((float) cr.getDouble(1)));
+                    }
+                    sleepSafe(150);
+                    if (coords.has("close_ad")) {
+                        JSONArray ca = coords.getJSONArray("close_ad");
+                        service.tap(getPxX((float) ca.getDouble(0)), getPxY((float) ca.getDouble(1)));
+                    }
+                }
+
+                sleepSafe(150);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void stopBot() {

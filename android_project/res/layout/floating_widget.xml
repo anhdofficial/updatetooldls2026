@@ -63,6 +63,25 @@
             android:textStyle="bold"
             android:layout_marginTop="2dp"/>
 
+        <TextView
+            android:id="@+id/tv_float_stats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đã xem: 0 video (~0 vàng)"
+            android:textColor="#ECEFF1"
+            android:textSize="10sp"
+            android:layout_marginTop="2dp"/>
+
+        <Button
+            android:id="@+id/btn_float_mode"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:text="Chế độ: 🎬 Cày Ads Reset"
+            android:textSize="10sp"
+            android:backgroundTint="#455A64"
+            android:textColor="#80D8FF"
+            android:layout_marginTop="6dp"/>
+
         <Button
             android:id="@+id/btn_float_toggle"
             android:layout_width="match_parent"
@@ -72,7 +91,7 @@
             android:textStyle="bold"
             android:backgroundTint="#00C853"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="6dp"/>
 
         <Button
             android:id="@+id/btn_float_update"

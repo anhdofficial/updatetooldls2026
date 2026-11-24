@@ -11,21 +11,23 @@ public final class R {
   public static final class id {
     public static final int btn_check_update=0x7f010000;
     public static final int btn_close_float=0x7f010001;
-    public static final int btn_float_toggle=0x7f010002;
-    public static final int btn_float_update=0x7f010003;
-    public static final int btn_grant_acc=0x7f010004;
-    public static final int btn_grant_overlay=0x7f010005;
-    public static final int btn_mini=0x7f010006;
-    public static final int btn_start_floating=0x7f010007;
-    public static final int et_update_url=0x7f010008;
-    public static final int layout_collapsed=0x7f010009;
-    public static final int layout_expanded=0x7f01000a;
-    public static final int layout_root=0x7f01000b;
-    public static final int tv_acc_status=0x7f01000c;
-    public static final int tv_float_res=0x7f01000d;
-    public static final int tv_float_status=0x7f01000e;
-    public static final int tv_overlay_status=0x7f01000f;
-    public static final int tv_script_version=0x7f010010;
+    public static final int btn_float_mode=0x7f010002;
+    public static final int btn_float_toggle=0x7f010003;
+    public static final int btn_float_update=0x7f010004;
+    public static final int btn_grant_acc=0x7f010005;
+    public static final int btn_grant_overlay=0x7f010006;
+    public static final int btn_mini=0x7f010007;
+    public static final int btn_start_floating=0x7f010008;
+    public static final int et_update_url=0x7f010009;
+    public static final int layout_collapsed=0x7f01000a;
+    public static final int layout_expanded=0x7f01000b;
+    public static final int layout_root=0x7f01000c;
+    public static final int tv_acc_status=0x7f01000d;
+    public static final int tv_float_res=0x7f01000e;
+    public static final int tv_float_stats=0x7f01000f;
+    public static final int tv_float_status=0x7f010010;
+    public static final int tv_overlay_status=0x7f010011;
+    public static final int tv_script_version=0x7f010012;
   }
   public static final class layout {
     public static final int activity_main=0x7f020000;

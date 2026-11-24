@@ -70,5 +70,17 @@ public class AutoAccessibilityService extends AccessibilityService {
         builder.addStroke(stroke);
         return dispatchGesture(builder.build(), null, null);
     }
+
+    public boolean goHome() {
+        return performGlobalAction(GLOBAL_ACTION_HOME);
+    }
+
+    public boolean openRecents() {
+        return performGlobalAction(GLOBAL_ACTION_RECENTS);
+    }
+
+    public boolean goBack() {
+        return performGlobalAction(GLOBAL_ACTION_BACK);
+    }
 }
 
